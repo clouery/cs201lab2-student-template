@@ -108,39 +108,33 @@ public class SinglyLinkedList<E extends Comparable<E>> {
             return;
         }
 
+        List<Node<E>> original = new ArrayList<>();
         List<Node<E>> sorted = new ArrayList<>();
         Node<E> current = head;
         while (current != null) {
+            original.add(current);
             sorted.add(current);
             current = current.getNext();
         }
         // we put the nodes in sorted order
-        sorted.sort((a,b) -> Integer.compare((Integer) a.getElement(), (Integer) b.getElement()));
+        Collections.sort(sorted, (a,b) -> a.getElement().compareTo(b.getElement()));
 
-
-        int leftPtr = 0;
-        int rightPtr = sorted.size() - 1;
-
-        while (leftPtr < rightPtr) {
-            // we swap the largest and smallest ...
-            Node<E> temp = sorted.get(leftPtr);
-            sorted.set(leftPtr, sorted.get(rightPtr));
-            sorted.set(rightPtr, temp);
-
-            leftPtr++;
-            rightPtr--;
+        List<Node<E>> target = new ArrayList<>();
+        for(int i = 0 ; i < sorted.size() ; i++) {
+            // find the index of where the original node is now in sorted
+            int k = sorted.indexOf(original.get(i));
+            target.add(sorted.get(sorted.size() - k -1));
         }
 
         // now we change the reference
         for(int i = 0 ; i < sorted.size() -1 ; i++) {
-            Node<E> curNode = sorted.get(i);
-            curNode.setNext(sorted.get(i+1));
+            target.get(i).setNext(target.get(i+1));
         }
 
         // point the tail and head and the last node
-        sorted.get(sorted.size() - 1).setNext(null);
-        head = sorted.get(0);
-        tail = sorted.get(sorted.size() - 1); 
+        target.get(target.size() - 1).setNext(null);
+        head = target.get(0);
+        tail = target.get(target.size() - 1); 
 
     }
 }
